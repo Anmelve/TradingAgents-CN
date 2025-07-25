@@ -220,7 +220,6 @@ class ReportExporter:
         for key, title, description in analysis_modules:
             md_content += f"\n### {title}\n\n"
             md_content += f"*{description}*\n\n"
-            
             if key in state and state[key]:
                 content = state[key]
                 if isinstance(content, str):
@@ -233,6 +232,55 @@ class ReportExporter:
                     md_content += f"{content}\n\n"
             else:
                 md_content += "No data available\n\n"
+        
+        # Add Valuation Agent section if present
+        valuation_report = state.get('valuation_report')
+        dcf_value = state.get('dcf_value')
+        growth_rate = state.get('growth_rate')
+        fcf = state.get('fcf')
+        revenue = state.get('revenue')
+        ticker = state.get('ticker')
+        region = state.get('region')
+        dcf_table = state.get('dcf_table')
+        stock_price = state.get('stock_price') or results.get('stock_price')
+        if valuation_report or dcf_value or dcf_table:
+            md_content += "\n### 📊 Valuation Agent (DCF Analysis)\n\n"
+            if valuation_report:
+                md_content += f"{valuation_report}\n\n"
+            if dcf_value is not None:
+                md_content += f"**DCF Value:** {dcf_value:.2f}\n\n"
+            if growth_rate is not None:
+                md_content += f"**Growth Rate:** {growth_rate*100:.2f}%\n\n"
+            if fcf is not None:
+                md_content += f"**Free Cash Flow (FCF):** {fcf}\n\n"
+            if revenue is not None:
+                md_content += f"**Revenue:** {revenue}\n\n"
+            if ticker is not None:
+                md_content += f"**Stock Ticker:** {ticker}\n\n"
+            if region is not None:
+                md_content += f"**Region:** {region}\n\n"
+            if stock_price is not None:
+                md_content += f"**Stock Price Used:** {stock_price}\n\n"
+            if dcf_table:
+                try:
+                    import pandas as pd
+                    df = pd.DataFrame(dcf_table)
+                    md_content += '**DCF Model Table:**\n\n'
+                    md_content += df.to_markdown(index=False) + "\n\n"
+                except Exception as e:
+                    md_content += f"DCF Table could not be rendered: {e}\n\n"
+
+        # For AI analysis reasoning, prefer valuation agent's reasoning if present
+        ai_reasoning = None
+        if valuation_report:
+            ai_reasoning = valuation_report
+        elif decision.get('reasoning'):
+            ai_reasoning = decision.get('reasoning')
+        else:
+            ai_reasoning = 'No analysis reasoning provided'
+
+        # Replace the original reasoning section
+        md_content = md_content.replace('### Analysis Reasoning\n' + reasoning, '### Analysis Reasoning\n' + ai_reasoning)
         
         # Add risk warning
         md_content += f"""

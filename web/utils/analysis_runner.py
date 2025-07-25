@@ -564,7 +564,16 @@ def format_analysis_results(results):
         'sentiment_report',
         'news_report',
         'risk_assessment',
-        'investment_plan'
+        'investment_plan',
+        'valuation_report',   # 新增
+        'dcf_value',          # 新增
+        'growth_rate',        # 新增
+        'fcf',                # 新增
+        'revenue',            # 新增
+        'ticker',             # 新增
+        'region',             # 新增
+        'stock_price',        # 新增
+        'dcf_table'           # 新增
     ]
     
     for key in analysis_keys:
@@ -600,6 +609,12 @@ def validate_analysis_params(stock_symbol, analysis_date, analysts, research_dep
 
     errors = []
 
+    # Validate analyst types
+    allowed_analyst_types = {"market", "fundamentals", "news", "social", "valuation"}
+    for analyst in analysts:
+        if analyst not in allowed_analyst_types:
+            errors.append(f"Invalid analyst type: {analyst}")
+
     # Validate stock code
     if not stock_symbol or len(stock_symbol.strip()) == 0:
         errors.append("Stock code cannot be empty")
@@ -617,11 +632,8 @@ def validate_analysis_params(stock_symbol, analysis_date, analysts, research_dep
             # HK-share: 4-5 digits.HK or pure 4-5 digits
             import re
             symbol_upper = symbol.upper()
-            # Check if it's XXXX.HK or XXXXX.HK format
             hk_format = re.match(r'^\d{4,5}\.HK$', symbol_upper)
-            # Check if it's pure 4-5 digit format
             digit_format = re.match(r'^\d{4,5}$', symbol)
-
             if not (hk_format or digit_format):
                 errors.append("HK-share code format error, should be 4 digits.HK (e.g., 0700.HK) or 4 digits (e.g., 0700)")
         elif market_type == "US stocks":
@@ -629,27 +641,7 @@ def validate_analysis_params(stock_symbol, analysis_date, analysts, research_dep
             import re
             if not re.match(r'^[A-Z]{1,5}$', symbol.upper()):
                 errors.append("US-share code format error, should be 1-5 letters (e.g., AAPL)")
-    
-    # Validate analyst list
-    if not analysts or len(analysts) == 0:
-        errors.append("At least one analyst must be selected")
-    
-    valid_analysts = ['market', 'social', 'news', 'fundamentals']
-    invalid_analysts = [a for a in analysts if a not in valid_analysts]
-    if invalid_analysts:
-        errors.append(f"Invalid analyst type: {', '.join(invalid_analysts)}")
-    
-    # Validate research depth
-    if not isinstance(research_depth, int) or research_depth < 1 or research_depth > 5:
-        errors.append("Research depth must be an integer between 1 and 5")
-    
-    # Validate analysis date
-    try:
-        from datetime import datetime
-        datetime.strptime(analysis_date, '%Y-%m-%d')
-    except ValueError:
-        errors.append("Analysis date format is invalid, should be YYYY-MM-DD format")
-    
+
     return len(errors) == 0, errors
 
 def get_supported_stocks():

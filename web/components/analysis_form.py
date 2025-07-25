@@ -144,6 +144,12 @@ def render_analysis_form():
                 value='fundamentals' in cached_analysts,
                 help="Analyze financial data, company fundamentals, and valuation levels"
             )
+
+            valuation_analyst = st.checkbox(
+                "📊 Valuation Agent",
+                value='valuation' in cached_analysts,
+                help="Perform DCF valuation using AI-predicted growth rates and real financial data"
+            )
         
         # Collect selected analysts
         selected_analysts = []
@@ -155,6 +161,8 @@ def render_analysis_form():
             selected_analysts.append(("news", "News Analyst"))
         if fundamentals_analyst:
             selected_analysts.append(("fundamentals", "Fundamental Analyst"))
+        if valuation_analyst:
+            selected_analysts.append(("valuation", "Valuation Agent"))
         
         # Display selection summary
         if selected_analysts:

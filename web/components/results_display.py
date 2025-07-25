@@ -52,6 +52,39 @@ def render_results(results):
     st.markdown("---")
     st.header(f"📊 {stock_symbol} Analysis Results")
 
+    # --- Valuation Agent Section ---
+    valuation_report = results.get('valuation_report') or state.get('valuation_report')
+    dcf_value = results.get('dcf_value') or state.get('dcf_value')
+    growth_rate = results.get('growth_rate') or state.get('growth_rate')
+    fcf = results.get('fcf') or state.get('fcf')
+    revenue = results.get('revenue') or state.get('revenue')
+    ticker = results.get('ticker') or state.get('ticker')
+    region = results.get('region') or state.get('region')
+    stock_price = results.get('stock_price') or state.get('stock_price')
+    dcf_table = results.get('dcf_table') or state.get('dcf_table')
+    if valuation_report or dcf_value or growth_rate:
+        with st.expander('📊 Valuation Agent (DCF Analysis)', expanded=True):
+            if valuation_report:
+                st.markdown(valuation_report)
+            if dcf_value is not None:
+                st.write(f"**DCF Value:** {dcf_value:.2f}")
+            if growth_rate is not None:
+                st.write(f"**Growth Rate:** {growth_rate*100:.2f}%")
+            if fcf is not None:
+                st.write(f"**Free Cash Flow (FCF):** {fcf}")
+            if revenue is not None:
+                st.write(f"**Revenue:** {revenue}")
+            if ticker is not None:
+                st.write(f"**Stock Ticker:** {ticker}")
+            if region is not None:
+                st.write(f"**Region:** {region}")
+            if stock_price is not None:
+                st.write(f"**Stock Price Used:** {stock_price}")
+            if dcf_table is not None:
+                import pandas as pd
+                st.markdown('**DCF Model Table:**')
+                st.dataframe(pd.DataFrame(dcf_table))
+
     # If it's demo data, show a hint
     if is_demo:
         st.info("🎭 **Demo Mode**: The current display is simulated analysis data for interface demonstration. To obtain real analysis results, please configure the correct API key.")
@@ -260,6 +293,12 @@ def render_detailed_analysis(state):
             'description': 'Financial data, valuation levels, profitability analysis'
         },
         {
+            'key': 'valuation_report',
+            'title': '📊 Valuation Analysis',
+            'icon': '📊',
+            'description': 'Discounted Cash Flow (DCF) model, valuation summary, and price comparison'
+        },
+        {
             'key': 'sentiment_report',
             'title': '💭 Market Sentiment Analysis', 
             'icon': '💭',
@@ -292,13 +331,39 @@ def render_detailed_analysis(state):
         with tab:
             if module['key'] in state and state[module['key']]:
                 st.markdown(f"*{module['description']}*")
-                
-                # Format content for display
                 content = state[module['key']]
-                if isinstance(content, str):
+                if module['key'] == 'valuation_report':
+                    dcf_value = state.get('dcf_value')
+                    growth_rate = state.get('growth_rate')
+                    fcf = state.get('fcf')
+                    revenue = state.get('revenue')
+                    ticker = state.get('ticker')
+                    region = state.get('region')
+                    stock_price = state.get('stock_price')
+                    dcf_table = state.get('dcf_table')
+                    if isinstance(content, str):
+                        st.markdown(content)
+                    if dcf_value is not None:
+                        st.write(f"**DCF Value:** {dcf_value:.2f}")
+                    if growth_rate is not None:
+                        st.write(f"**Growth Rate:** {growth_rate*100:.2f}%")
+                    if fcf is not None:
+                        st.write(f"**Free Cash Flow (FCF):** {fcf}")
+                    if revenue is not None:
+                        st.write(f"**Revenue:** {revenue}")
+                    if ticker is not None:
+                        st.write(f"**Stock Ticker:** {ticker}")
+                    if region is not None:
+                        st.write(f"**Region:** {region}")
+                    if stock_price is not None:
+                        st.write(f"**Stock Price Used:** {stock_price}")
+                    if dcf_table is not None:
+                        import pandas as pd
+                        st.markdown('**DCF Model Table:**')
+                        st.dataframe(pd.DataFrame(dcf_table))
+                elif isinstance(content, str):
                     st.markdown(content)
                 elif isinstance(content, dict):
-                    # If it's a dictionary, format for display
                     for key, value in content.items():
                         st.subheader(key.replace('_', ' ').title())
                         st.write(value)

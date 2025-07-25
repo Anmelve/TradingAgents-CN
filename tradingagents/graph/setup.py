@@ -136,6 +136,12 @@ class GraphSetup:
             delete_nodes["fundamentals"] = create_msg_delete()
             tool_nodes["fundamentals"] = self.tool_nodes["fundamentals"]
 
+        if "valuation" in selected_analysts:
+            from tradingagents.agents.analysts.ValuationAgent import create_valuation_analyst
+            analyst_nodes["valuation"] = create_valuation_analyst(self.quick_thinking_llm, self.toolkit)
+            delete_nodes["valuation"] = create_msg_delete()
+            tool_nodes["valuation"] = self.tool_nodes.get("valuation", lambda x: x)  # fallback if no tools
+
         # Create researcher and manager nodes
         bull_researcher_node = create_bull_researcher(
             self.quick_thinking_llm, self.bull_memory

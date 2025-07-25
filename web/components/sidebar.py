@@ -62,21 +62,12 @@ def render_sidebar():
                 help="Select the Google Gemini model for analysis"
             )
         elif llm_provider == "openai":
-            openai_models = [
-                "gpt-4o", "gpt-4-turbo", "gpt-4", "gpt-3.5-turbo"
-            ]
-            openai_model_labels = {
-                "gpt-4o": "GPT-4o (Latest, Fastest, Most Capable)",
-                "gpt-4-turbo": "GPT-4 Turbo",
-                "gpt-4": "GPT-4 (Standard)",
-                "gpt-3.5-turbo": "GPT-3.5 Turbo"
-            }
             llm_model = st.selectbox(
                 "Select OpenAI Model",
-                options=openai_models,
+                options=["gpt-4-turbo"],
                 index=0,
-                format_func=lambda x: openai_model_labels.get(x, x),
-                help="Select the OpenAI model for analysis"
+                format_func=lambda x: "GPT-4 Turbo (Only Option)",
+                help="Select the OpenAI model for analysis (only GPT-4 Turbo is supported)"
             )
 
         # Change to multiselect for memory and debug options

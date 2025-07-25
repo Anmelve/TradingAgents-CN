@@ -67,7 +67,11 @@ class TradingAgentsGraph:
 
         # Initialize LLMs
         temp = self.config.get("temperature", 0.7)
-        if self.config["llm_provider"].lower() == "openai" or self.config["llm_provider"] == "ollama" or self.config["llm_provider"] == "openrouter":
+        if self.config["llm_provider"].lower() == "openai":
+            # Always use gpt-4-turbo for OpenAI
+            self.deep_thinking_llm = ChatOpenAI(model="gpt-4-turbo", base_url=self.config["backend_url"], temperature=temp)
+            self.quick_thinking_llm = ChatOpenAI(model="gpt-4-turbo", base_url=self.config["backend_url"], temperature=temp)
+        elif self.config["llm_provider"].lower() == "ollama" or self.config["llm_provider"] == "openrouter":
             self.deep_thinking_llm = ChatOpenAI(model=self.config["deep_think_llm"], base_url=self.config["backend_url"], temperature=temp)
             self.quick_thinking_llm = ChatOpenAI(model=self.config["quick_think_llm"], base_url=self.config["backend_url"], temperature=temp)
         elif self.config["llm_provider"].lower() == "anthropic":

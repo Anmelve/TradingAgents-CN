@@ -13,10 +13,11 @@ def create_research_manager(llm, memory):
         sentiment_report = state["sentiment_report"]
         news_report = state["news_report"]
         fundamentals_report = state["fundamentals_report"]
+        valuation_report = state["valuation_report"]
 
         investment_debate_state = state["investment_debate_state"]
 
-        curr_situation = f"{market_research_report}\n\n{sentiment_report}\n\n{news_report}\n\n{fundamentals_report}"
+        curr_situation = f"{market_research_report}\n\n{sentiment_report}\n\n{news_report}\n\n{fundamentals_report}\n\n{valuation_report}"
 
         # 安全检查：确保memory不为None
         if memory is not None:
@@ -38,8 +39,8 @@ Additionally, develop a detailed investment plan for traders. This should includ
 Your suggestion: A clear stance based on the most convincing argument.
 Reasoning: Explain why these arguments lead to your conclusion.
 Strategic action: Specific steps to implement the suggestion.
-📊 Target price analysis: Based on all available reports (fundamental, news, sentiment), provide a comprehensive target price range and specific price targets. Consider:
-- Basic valuation from fundamental reports
+📊 Target price analysis: Based on all available reports (fundamental, news, sentiment, valuation), provide a comprehensive target price range and specific price targets. Consider:
+- Basic valuation from fundamental and valuation reports
 - Impact of news on price expectations
 - Price adjustments driven by sentiment
 - Technical support/resistance levels
@@ -60,6 +61,8 @@ Sentiment Analysis: {sentiment_report}
 News Analysis: {news_report}
 
 Fundamental Analysis: {fundamentals_report}
+
+Valuation Analysis: {valuation_report}
 
 Here is the debate:
 Debate History:
