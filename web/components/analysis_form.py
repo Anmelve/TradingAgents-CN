@@ -117,7 +117,7 @@ def render_analysis_form():
         col1, col2 = st.columns(2)
         
         # Get cached analyst selection
-        cached_analysts = cached_config.get('selected_analysts', ['market', 'fundamentals']) if cached_config else ['market', 'fundamentals']
+        cached_analysts = cached_config.get('selected_analysts', ['market', 'fundamentals', 'valuation']) if cached_config else ['market', 'fundamentals', 'valuation']
 
         with col1:
             market_analyst = st.checkbox(

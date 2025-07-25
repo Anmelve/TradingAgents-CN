@@ -13,6 +13,7 @@ ANALYST_ORDER = [
     ("社交媒体分析师 | Social Media Analyst", AnalystType.SOCIAL),
     ("新闻分析师 | News Analyst", AnalystType.NEWS),
     ("基本面分析师 | Fundamentals Analyst", AnalystType.FUNDAMENTALS),
+    ("估值分析师 | Valuation Agent", AnalystType.VALUATION),
 ]
 
 

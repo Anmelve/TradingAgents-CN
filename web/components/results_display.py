@@ -55,12 +55,14 @@ def render_results(results):
     # --- Valuation Agent Section ---
     valuation_report = results.get('valuation_report') or state.get('valuation_report')
     dcf_value = results.get('dcf_value') or state.get('dcf_value')
+    per_share_dcf_value = results.get('per_share_dcf_value') or state.get('per_share_dcf_value')
     growth_rate = results.get('growth_rate') or state.get('growth_rate')
     fcf = results.get('fcf') or state.get('fcf')
     revenue = results.get('revenue') or state.get('revenue')
     ticker = results.get('ticker') or state.get('ticker')
     region = results.get('region') or state.get('region')
     stock_price = results.get('stock_price') or state.get('stock_price')
+    shares_outstanding = results.get('shares_outstanding') or state.get('shares_outstanding')
     dcf_table = results.get('dcf_table') or state.get('dcf_table')
     if valuation_report or dcf_value or growth_rate:
         with st.expander('📊 Valuation Agent (DCF Analysis)', expanded=True):
@@ -68,6 +70,8 @@ def render_results(results):
                 st.markdown(valuation_report)
             if dcf_value is not None:
                 st.write(f"**DCF Value:** {dcf_value:.2f}")
+            if per_share_dcf_value is not None:
+                st.write(f"**Per Share DCF Value:** {per_share_dcf_value:.2f}")
             if growth_rate is not None:
                 st.write(f"**Growth Rate:** {growth_rate*100:.2f}%")
             if fcf is not None:
@@ -80,6 +84,8 @@ def render_results(results):
                 st.write(f"**Region:** {region}")
             if stock_price is not None:
                 st.write(f"**Stock Price Used:** {stock_price}")
+            if shares_outstanding is not None:
+                st.write(f"**Shares Outstanding:** {shares_outstanding}")
             if dcf_table is not None:
                 import pandas as pd
                 st.markdown('**DCF Model Table:**')

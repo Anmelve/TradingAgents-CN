@@ -567,6 +567,8 @@ def format_analysis_results(results):
         'investment_plan',
         'valuation_report',   # 新增
         'dcf_value',          # 新增
+        'per_share_dcf_value', # 新增
+        'shares_outstanding',  # 新增
         'growth_rate',        # 新增
         'fcf',                # 新增
         'revenue',            # 新增
