@@ -95,7 +95,7 @@ def create_valuation_analyst(llm, toolkit):
             "You are a professional DCF valuation expert. "
             "You must estimate a reasonable FCF growth rate, discount rate, and terminal growth rate for the following company and explain your reasoning in detail. "
             "Return your answer WITH JSON ONLY and in the following STRICT JSON format (all property names and string values must use double quotes): "
-            '{ "growth_rate": <float>, "discount_rate": <float>, "terminal_growth_rate": <float>, "reasoning": <string> }'
+            '{{ "growth_rate": <float>, "discount_rate": <float>, "terminal_growth_rate": <float>, "reasoning": <string> }}'
         )
 
         user_message = (
@@ -110,6 +110,9 @@ def create_valuation_analyst(llm, toolkit):
         logger.info(f"Prompt sent to LLM (system): {system_message}")
         logger.info(f"Prompt sent to LLM (user): {user_message}")
 
+        # Initialize response_text to avoid UnboundLocalError
+        response_text = ""
+        
         try:
             prompt = ChatPromptTemplate.from_messages([
                 ("system", system_message),
@@ -148,8 +151,12 @@ def create_valuation_analyst(llm, toolkit):
 
         except Exception as e:
             logger.error(f"LLM growth rate/discount/terminal extraction failed: {e}")
-            match = re.search(r"([0-9.]+)\s*%", response_text)
-            growth_rate = float(match.group(1)) / 100.0 if match else 0.08
+            # Use response_text if available, otherwise use empty string
+            if response_text:
+                match = re.search(r"([0-9.]+)\s*%", response_text)
+                growth_rate = float(match.group(1)) / 100.0 if match else 0.08
+            else:
+                growth_rate = 0.08
             discount_rate = 0.1
             terminal_growth_rate = 0.03
             reasoning = f"Defaulted to 8% growth rate, 10% discount rate, 3% terminal growth rate due to LLM error: {e}"
