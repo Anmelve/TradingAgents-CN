@@ -365,7 +365,7 @@ class AsyncProgressTracker:
         message_lower = message.lower()
 
         # Start analysis phase - only match initial start message
-        if "🚀 开始股票分析" in message:
+        if "开始股票分析" in message:
             return 0
         # Data validation phase
         elif "验证" in message or "预获取" in message or "数据准备" in message:

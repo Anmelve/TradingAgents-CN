@@ -50,7 +50,7 @@ def render_results(results):
     is_demo = results.get('is_demo', False)
 
     st.markdown("---")
-    st.header(f"📊 {stock_symbol} Analysis Results")
+    st.header(f"{stock_symbol} Analysis Results")
 
     # --- Valuation Agent Section ---
     valuation_report = results.get('valuation_report') or state.get('valuation_report')
@@ -65,7 +65,7 @@ def render_results(results):
     shares_outstanding = results.get('shares_outstanding') or state.get('shares_outstanding')
     dcf_table = results.get('dcf_table') or state.get('dcf_table')
     if valuation_report or dcf_value or growth_rate:
-        with st.expander('📊 Valuation Agent (DCF Analysis)', expanded=True):
+        with st.expander('Valuation Agent (DCF Analysis)', expanded=True):
             if valuation_report:
                 st.markdown(valuation_report)
             if dcf_value is not None:
@@ -116,7 +116,7 @@ def render_results(results):
 def render_analysis_info(results):
     """Render analysis configuration information"""
 
-    with st.expander("📋 Analysis Configuration Information", expanded=False):
+    with st.expander("Analysis Configuration Information", expanded=False):
         col1, col2, col3 = st.columns(3)
 
         with col1:
@@ -165,11 +165,11 @@ def render_analysis_info(results):
         if analysts:
             st.write("**Analysts Involved:**")
             analyst_names = {
-                'market': '📈 Market Technical Analyst',
-                'fundamentals': '💰 Fundamental Analyst',
-                'news': '📰 News Analyst',
-                'social_media': '💭 Social Media Analyst',
-                'risk': '⚠️ Risk Assessor'
+                'market': 'Market Technical Analyst',
+                'fundamentals': 'Fundamental Analyst',
+                'news': 'News Analyst',
+                'social_media': 'Social Media Analyst',
+                'risk': 'Risk Assessor'
             }
 
             analyst_list = [analyst_names.get(analyst, analyst) for analyst in analysts]
@@ -178,7 +178,7 @@ def render_analysis_info(results):
 def render_decision_summary(decision, stock_symbol=None):
     """Render investment decision summary"""
 
-    st.subheader("🎯 Investment Decision Summary")
+    st.subheader("Investment Decision Summary")
 
     col1, col2, col3, col4 = st.columns(4)
 
@@ -276,62 +276,62 @@ def render_decision_summary(decision, stock_symbol=None):
     
     # Analysis reasoning
     if 'reasoning' in decision and decision['reasoning']:
-        with st.expander("🧠 AI Analysis Reasoning", expanded=True):
+        with st.expander("AI Analysis Reasoning", expanded=True):
             st.markdown(decision['reasoning'])
 
 def render_detailed_analysis(state):
     """Render detailed analysis report"""
     
-    st.subheader("📋 Detailed Analysis Report")
+    st.subheader("Detailed Analysis Report")
     
     # Define analysis modules
     analysis_modules = [
         {
             'key': 'market_report',
-            'title': '📈 Market Technical Analysis',
-            'icon': '📈',
+            'title': 'Market Technical Analysis',
+            'icon': '',
             'description': 'Technical indicators, price trends, support and resistance analysis'
         },
         {
             'key': 'fundamentals_report', 
-            'title': '💰 Fundamental Analysis',
-            'icon': '💰',
+            'title': 'Fundamental Analysis',
+            'icon': '',
             'description': 'Financial data, valuation levels, profitability analysis'
         },
         {
             'key': 'valuation_report',
-            'title': '📊 Valuation Analysis',
-            'icon': '📊',
+            'title': 'Valuation Analysis',
+            'icon': '',
             'description': 'Discounted Cash Flow (DCF) model, valuation summary, and price comparison'
         },
         {
             'key': 'sentiment_report',
-            'title': '💭 Market Sentiment Analysis', 
-            'icon': '💭',
+            'title': 'Market Sentiment Analysis', 
+            'icon': '',
             'description': 'Investor sentiment, social media sentiment indicators'
         },
         {
             'key': 'news_report',
-            'title': '📰 News Event Analysis',
-            'icon': '📰', 
+            'title': 'News Event Analysis',
+            'icon': '', 
             'description': 'Related news events, market dynamic impact analysis'
         },
         {
             'key': 'risk_assessment',
-            'title': '⚠️ Risk Assessment',
-            'icon': '⚠️',
+            'title': 'Risk Assessment',
+            'icon': '',
             'description': 'Risk factor identification, risk level assessment'
         },
         {
             'key': 'investment_plan',
-            'title': '📋 Investment Suggestion',
-            'icon': '📋',
+            'title': 'Investment Suggestion',
+            'icon': '',
             'description': 'Specific investment strategy, position management advice'
         }
     ]
     
     # Create tabs
-    tabs = st.tabs([f"{module['icon']} {module['title']}" for module in analysis_modules])
+    tabs = st.tabs([module['title'] for module in analysis_modules])
     
     for i, (tab, module) in enumerate(zip(tabs, analysis_modules)):
         with tab:
@@ -382,7 +382,7 @@ def render_risk_warning(is_demo=False):
     """Render risk warning"""
 
     st.markdown("---")
-    st.subheader("⚠️ Important Risk Warning")
+    st.subheader("Important Risk Warning")
 
     # Use Streamlit's native components instead of HTML
     if is_demo:

@@ -105,21 +105,21 @@ def render_token_statistics():
 
 def render_overview_metrics(stats: Dict[str, Any], time_range: str):
     """Render overview metrics"""
-    st.markdown(f"**📈 {time_range} Overview**")
+    st.markdown(f"**{time_range} Overview**")
     
     # Create metric cards
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
         st.metric(
-            label="💰 Total Cost",
+            label="Total Cost",
             value=f"¥{stats['total_cost']:.4f}",
             delta=None
         )
     
     with col2:
         st.metric(
-            label="🔢 Total Calls",
+            label="Total Calls",
             value=f"{stats['total_requests']:,}",
             delta=None
         )
@@ -127,7 +127,7 @@ def render_overview_metrics(stats: Dict[str, Any], time_range: str):
     with col3:
         total_tokens = stats['total_input_tokens'] + stats['total_output_tokens']
         st.metric(
-            label="📊 Total Tokens",
+            label="Total Tokens",
             value=f"{total_tokens:,}",
             delta=None
         )
@@ -135,7 +135,7 @@ def render_overview_metrics(stats: Dict[str, Any], time_range: str):
     with col4:
         avg_cost = stats['total_cost'] / stats['total_requests'] if stats['total_requests'] > 0 else 0
         st.metric(
-            label="📊 Average Cost per Call",
+            label="Average Cost per Call",
             value=f"¥{avg_cost:.4f}",
             delta=None
         )
@@ -145,14 +145,14 @@ def render_overview_metrics(stats: Dict[str, Any], time_range: str):
     
     with col1:
         st.metric(
-            label="📥 Input Tokens",
+            label="Input Tokens",
             value=f"{stats['total_input_tokens']:,}",
             delta=f"{stats['total_input_tokens']/(stats['total_input_tokens']+stats['total_output_tokens'])*100:.1f}%"
         )
     
     with col2:
         st.metric(
-            label="📤 Output Tokens",
+            label="Output Tokens",
             value=f"{stats['total_output_tokens']:,}",
             delta=f"{stats['total_output_tokens']/(stats['total_input_tokens']+stats['total_output_tokens'])*100:.1f}%"
         )

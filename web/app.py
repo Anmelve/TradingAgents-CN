@@ -38,7 +38,7 @@ from utils.smart_session_manager import get_persistent_analysis_id, set_persiste
 # Set page config
 st.set_page_config(
     page_title="TradingAgents-CN Stock Analysis Platform",
-    page_icon="📈",
+    page_icon="",
     layout="wide",
     initial_sidebar_state="expanded",
     menu_items=None
@@ -111,12 +111,13 @@ st.markdown("""
     
     /* Apply styles */
     .main-header {
-        background: linear-gradient(90deg, #1f77b4, #ff7f0e);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         padding: 1rem;
         border-radius: 10px;
         margin-bottom: 2rem;
         color: white;
         text-align: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
     
     .metric-card {
@@ -202,10 +203,10 @@ def initialize_session_state():
                             st.session_state.last_stock_symbol = raw_results.get('stock_symbol', '')
                         if 'market_type' in raw_results:
                             st.session_state.last_market_type = raw_results.get('market_type', '')
-                        logger.info(f"📊 [Result restored] Restored results from analysis {latest_id}, status: {analysis_status}")
+                        logger.info(f"[Result restored] Restored results from analysis {latest_id}, status: {analysis_status}")
 
         except Exception as e:
-            logger.warning(f"⚠️ [Result restoration] Restoration failed: {e}")
+            logger.warning(f"[Result restoration] Restoration failed: {e}")
 
     # Use cookie manager to restore analysis ID (priority: session state > cookie > Redis/file)
     try:
@@ -218,7 +219,7 @@ def initialize_session_state():
             # Log only when status changes to avoid repetition
             current_session_status = st.session_state.get('last_logged_status')
             if current_session_status != actual_status:
-                logger.info(f"📊 [Status check] Actual status of analysis {persistent_analysis_id}: {actual_status}")
+                logger.info(f"[Status check] Actual status of analysis {persistent_analysis_id}: {actual_status}")
                 st.session_state.last_logged_status = actual_status
 
             if actual_status == 'running':
@@ -228,12 +229,12 @@ def initialize_session_state():
                 st.session_state.analysis_running = False
                 st.session_state.current_analysis_id = persistent_analysis_id
             else:  # not_found
-                logger.warning(f"📊 [Status check] Analysis {persistent_analysis_id} not found, cleaning up status")
+                logger.warning(f"[Status check] Analysis {persistent_analysis_id} not found, cleaning up status")
                 st.session_state.analysis_running = False
                 st.session_state.current_analysis_id = None
     except Exception as e:
         # If restoration fails, keep default values
-        logger.warning(f"⚠️ [Status restoration] Failed to restore analysis status: {e}")
+        logger.warning(f"[Status restoration] Failed to restore analysis status: {e}")
         st.session_state.analysis_running = False
         st.session_state.current_analysis_id = None
 
@@ -246,9 +247,9 @@ def initialize_session_state():
             st.session_state.form_config = session_data['form_config']
             # Log only when no analysis is running to avoid repetition
             if not st.session_state.get('analysis_running', False):
-                logger.info("📊 [Configuration restored] Form configuration restored")
+                logger.info("[Configuration restored] Form configuration restored")
     except Exception as e:
-        logger.warning(f"⚠️ [Configuration restoration] Failed to restore form configuration: {e}")
+        logger.warning(f"[Configuration restoration] Failed to restore form configuration: {e}")
 
 def main():
     """Main application"""
@@ -416,35 +417,7 @@ def main():
         max-width: calc(100vw - 276px) !important;
     }
 
-    /* Optimize style for usage guide area */
-    div[data-testid="column"]:last-child {
-        background-color: #f8f9fa !important;
-        border-radius: 8px !important;
-        padding: 12px !important;
-        margin-left: 8px !important;
-        border: 1px solid #e9ecef !important;
-    }
 
-    /* Expander style for usage guide */
-    div[data-testid="column"]:last-child .streamlit-expanderHeader {
-        background-color: #ffffff !important;
-        border-radius: 6px !important;
-        border: 1px solid #dee2e6 !important;
-        font-weight: 500 !important;
-    }
-
-    /* Text style for usage guide */
-    div[data-testid="column"]:last-child .stMarkdown {
-        font-size: 0.9rem !important;
-        line-height: 1.5 !important;
-    }
-
-    /* Usage guide title style */
-    div[data-testid="column"]:last-child h1 {
-        font-size: 1.3rem !important;
-        color: #495057 !important;
-        margin-bottom: 1rem !important;
-    }
     </style>
 
     <script>
@@ -522,7 +495,7 @@ def main():
 
     # Add debug button (only show in debug mode)
     if os.getenv('DEBUG_MODE') == 'true':
-        if st.button("🔄 Clear session state"):
+        if st.button("Clear session state"):
             st.session_state.clear()
             st.experimental_rerun()
 
@@ -534,11 +507,11 @@ def main():
     st.sidebar.markdown("---")
 
     # Add function switching title
-    st.sidebar.markdown("**🎯 Function Navigation**")
+    st.sidebar.markdown("**Function Navigation**")
 
     page = st.sidebar.selectbox(
         "Switch function module",
-        ["Stock Analysis", "⚙️ Configuration Management", "💾 Cache Management", "💰 Token Statistics", "📈 History", "🔧 System Status"],
+        ["Stock Analysis", "Usage Guide", "Configuration Management", "Cache Management", "Token Statistics", "History", "System Status"],
         label_visibility="collapsed"
     )
 
@@ -546,7 +519,7 @@ def main():
     st.sidebar.markdown("---")
 
     # Render different content based on selected page
-    if page == "⚙️ Configuration Management":
+    if page == "Configuration Management":
         try:
             from modules.config_management import render_config_management
             render_config_management()
@@ -554,14 +527,14 @@ def main():
             st.error(f"Configuration management module failed to load: {e}")
             st.info("Please ensure all dependencies are installed")
         return
-    elif page == "💾 Cache Management":
+    elif page == "Cache Management":
         try:
             from modules.cache_management import main as cache_main
             cache_main()
         except ImportError as e:
             st.error(f"Cache management page failed to load: {e}")
         return
-    elif page == "💰 Token Statistics":
+    elif page == "Token Statistics":
         try:
             from modules.token_statistics import render_token_statistics
             render_token_statistics()
@@ -569,12 +542,137 @@ def main():
             st.error(f"Token statistics page failed to load: {e}")
             st.info("Please ensure all dependencies are installed")
         return
-    elif page == "📈 History":
-        st.header("📈 History")
+    elif page == "History":
+        st.header("History")
         st.info("History function under development...")
         return
-    elif page == "🔧 System Status":
-        st.header("🔧 System Status")
+    elif page == "Usage Guide":
+        st.header("Usage Guide")
+        
+        # Quick start guide
+        with st.expander("Quick Start", expanded=True):
+            st.markdown("""
+            ### Operation Steps
+
+            1. **Enter Stock Code**
+               - A-share example: `000001` (Ping An Bank), `600519` (Guizhou Moutai), `000858` (Wuliangye)
+               - US share example: `AAPL` (Apple), `TSLA` (Tesla), `MSFT` (Microsoft)
+               - HK share example: `00700` (Tencent), `09988` (Alibaba)
+
+            **Important Note**: After entering the stock code, please press **Enter** to confirm!
+
+            2. **Select Analysis Date**
+               - Default to today
+               - Can select historical dates for backtesting analysis
+
+            3. **Select Analyst Team**
+               - At least one analyst must be selected
+               - It is recommended to select multiple analysts for a comprehensive analysis
+
+            4. **Set Research Depth**
+               - 1-2 levels: Quick overview
+               - 3 levels: Standard analysis (recommended)
+               - 4-5 levels: Deep research
+
+            5. **Click Start Analysis**
+               - Wait for AI analysis to complete
+               - View detailed analysis report
+
+            ### Usage Tips
+
+            - **Default A-share**: System defaults to analyzing A-shares, no special settings needed
+            - **Code Format**: A-share uses 6-digit code (e.g., `000001`),
+            - **Real-time Data**: Get the latest market data and news
+            - **Multi-dimensional Analysis**: Combine technical, fundamental, and sentiment analysis
+            """)
+
+        # Analysts' explanation
+        with st.expander("Analyst Team Explanation"):
+            st.markdown("""
+            ### Professional Analyst Team
+
+            - **Market Analyst**:
+              - Technical indicators analysis (K-line, moving averages, MACD, etc.)
+              - Price trend prediction
+              - Support and resistance analysis
+
+            - **Social Media Analyst**:
+              - Investor sentiment monitoring
+              - Social media heat analysis
+              - Market sentiment indicators
+
+            - **News Analyst**:
+              - Impact of major news events
+              - Policy interpretation analysis
+              - Industry dynamic tracking
+
+            - **Fundamental Analyst**:
+              - Financial statement analysis
+              - Valuation model calculation
+              - Industry comparison analysis
+              - Profitability assessment
+
+            **Suggestion**: Selecting multiple analysts can provide a more comprehensive investment advice
+            """)
+
+        # Model selection explanation
+        with st.expander("AI Model Explanation"):
+            st.markdown("""
+            ### Intelligent Model Selection
+
+            - **qwen-turbo**:
+              - Quick response, suitable for quick queries
+              - Lower cost, suitable for frequent use
+              - Response time: 2-5 seconds
+
+            - **qwen-plus**:
+              - Balanced performance, recommended for daily use ⭐
+              - Accuracy and speed balanced
+              - Response time: 5-10 seconds
+
+            - **qwen-max**:
+              - Strongest performance, suitable for deep analysis
+              - Highest accuracy and analysis depth
+              - Response time: 10-20 seconds
+
+            **Recommendation**: Use `qwen-plus` for daily analysis, `qwen-max` for important decisions
+            """)
+
+        # Common questions
+        with st.expander("Common Questions"):
+            st.markdown("""
+            ### Common Questions and Answers
+
+            **Q: Why does the stock code input not respond?**
+            A: Please ensure you press **Enter** after entering the code, this is the default behavior of Streamlit.
+
+            **Q: What is the A-share code format?**
+            A: A-share uses 6-digit code, such as `000001`, `600519`, `000858`, etc.
+
+            **Q: How long does an analysis take?**
+            A: Depending on research depth and model selection, it usually takes 30 seconds to 2 minutes.
+
+            **Q: Can Hong Kong stocks be analyzed?**
+            A: Yes, input 5-digit HK stocks, such as `00700`, `09988`, etc.
+
+            **Q: How far back can historical data be traced?**
+            A: Usually, historical data from the past 5 years can be analyzed.
+            """)
+
+        # Risk warning
+        st.warning("""
+        **Investment Risk Warning**
+
+        - The analysis results provided by this system are for reference only and do not constitute investment advice
+        - Investing involves risks, please be prudent, and invest rationally
+        - Please combine multiple information and professional advice for investment decisions
+        - Major investment decisions are recommended to consult professional investment advisors
+        - AI analysis has limitations, market changes are difficult to fully predict
+        """)
+        
+        return
+    elif page == "System Status":
+        st.header("System Status")
         st.info("System status function under development...")
         return
 
@@ -583,11 +681,11 @@ def main():
     api_status = check_api_keys()
     
     if not api_status['all_configured']:
-        st.error("⚠️ API key configuration incomplete, please configure the necessary API keys first")
+        st.error("API key configuration incomplete, please configure the necessary API keys first")
         
-        with st.expander("📋 API Key Configuration Guide", expanded=True):
+        with st.expander("API Key Configuration Guide", expanded=True):
             st.markdown("""
-            ### 🔑 Required API Keys
+            ### Required API Keys
             
             1. **Aliyun DashScope API Key** (DASHSCOPE_API_KEY)
                - Get address: https://dashscope.aliyun.com/
@@ -611,12 +709,12 @@ def main():
             """)
         
         # Display current API key status
-        st.subheader("🔍 Current API Key Status")
+        st.subheader("Current API Key Status")
         for key, status in api_status['details'].items():
             if status['configured']:
-                st.success(f"✅ {key}: {status['display']}")
+                st.success(f"{key}: {status['display']}")
             else:
-                st.error(f"❌ {key}: Not configured")
+                st.error(f"{key}: Not configured")
         
         return
     
@@ -628,8 +726,7 @@ def main():
     frequency_penalty = sidebar_config.get('frequency_penalty', 0.0)
     presence_penalty = sidebar_config.get('presence_penalty', 0.0)
     
-    # Add usage guide display toggle
-    show_guide = st.sidebar.checkbox("📖 Show Usage Guide", value=True, help="Show/hide right usage guide")
+
 
     # Add status cleanup button
     st.sidebar.markdown("---")
@@ -652,20 +749,16 @@ def main():
         from utils.thread_tracker import cleanup_dead_analysis_threads
         cleanup_dead_analysis_threads()
 
-        st.sidebar.success("✅ Analysis status cleaned up")
+        st.sidebar.success("Analysis status cleaned up")
         st.rerun()
 
-    # Main content area - adjust layout based on whether to show guide
-    if show_guide:
-        col1, col2 = st.columns([2, 1])  # 2:1 ratio, usage guide takes one-third
-    else:
-        col1 = st.container()
-        col2 = None
+    # Main content area
+    col1 = st.container()
     
     with col1:
         # 1. Analysis configuration area
 
-        st.header("⚙️ Analysis Configuration")
+        st.header("Analysis Configuration")
 
         # Render analysis form
         try:
@@ -673,11 +766,11 @@ def main():
 
             # Validate form data format
             if not isinstance(form_data, dict):
-                st.error(f"⚠️ Form data format exception: {type(form_data)}")
+                st.error(f"Form data format exception: {type(form_data)}")
                 form_data = {'submitted': False}
 
         except Exception as e:
-            st.error(f"❌ Form rendering failed: {e}")
+            st.error(f"Form rendering failed: {e}")
             form_data = {'submitted': False}
 
         # Avoid displaying debug information
@@ -715,7 +808,7 @@ def main():
 
                 # Clear old analysis results
                 st.session_state.analysis_results = None
-                logger.info("📊 [New analysis] Clearing old analysis results")
+                logger.info("[New analysis] Clearing old analysis results")
 
                 # Generate analysis ID
                 import uuid
@@ -744,18 +837,18 @@ def main():
                     async_tracker.update_progress(message, step)
 
                 # Display successful start message and loading animation
-                st.success(f"🚀 Analysis started! Analysis ID: {analysis_id}")
+                st.success(f"Analysis started! Analysis ID: {analysis_id}")
 
                 # Add loading animation
-                with st.spinner("🔄 Initializing analysis..."):
+                with st.spinner("Initializing analysis..."):
                     time.sleep(1.5)  # Allow user to see feedback
 
-                st.info(f"📊 Analyzing: {form_data.get('market_type', 'US Stocks')} {form_data['stock_symbol']}")
+                st.info(f"Analyzing: {form_data.get('market_type', 'US Stocks')} {form_data['stock_symbol']}")
                 st.info("""
-                ⏱️ Page will automatically refresh in 6 seconds...
-
-                📋 **View analysis progress:**
-                After refreshing, please scroll down to the "📊 Stock Analysis" section to view real-time progress
+                Page will automatically refresh in 6 seconds...
+                
+                **View analysis progress:**
+                After refreshing, please scroll down to the "Stock Analysis" section to view real-time progress
                 """)
 
                 # Ensure AsyncProgressTracker has saved initial state
@@ -809,14 +902,14 @@ def main():
                         )
 
                         # Mark analysis as completed and save results (do not access session state)
-                        async_tracker.mark_completed("✅ Analysis completed successfully!", results=results)
+                        async_tracker.mark_completed("Analysis completed successfully!", results=results)
 
-                        logger.info(f"✅ [Analysis completed] Stock analysis completed successfully: {analysis_id}")
+                        logger.info(f"[Analysis completed] Stock analysis completed successfully: {analysis_id}")
 
                     except Exception as e:
                         # Mark analysis as failed (do not access session state)
                         async_tracker.mark_failed(str(e))
-                        logger.error(f"❌ [Analysis failed] {analysis_id}: {e}")
+                        logger.error(f"[Analysis failed] {analysis_id}: {e}")
 
                     finally:
                         # Unregister thread from tracker
@@ -833,13 +926,13 @@ def main():
                 from utils.thread_tracker import register_analysis_thread
                 register_analysis_thread(analysis_id, analysis_thread)
 
-                logger.info(f"🧵 [Background analysis] Analysis thread started: {analysis_id}")
+                logger.info(f"[Background analysis] Analysis thread started: {analysis_id}")
 
                 # Analysis has started in the background, display start message and refresh page
-                st.success("🚀 Analysis started! Running in the background...")
+                st.success("Analysis started! Running in the background...")
 
                 # Display start message
-                st.info("⏱️ Page will automatically refresh to show analysis progress...")
+                st.info("Page will automatically refresh to show analysis progress...")
 
                 # Wait 2 seconds for user to see the start message, then refresh page
                 time.sleep(2)
@@ -850,7 +943,7 @@ def main():
         if current_analysis_id:
             st.markdown("---")
 
-            st.header("📊 Stock Analysis")
+            st.header("Stock Analysis")
 
             # Use thread detection to get actual status
             from utils.thread_tracker import check_analysis_status
@@ -860,7 +953,7 @@ def main():
             # Synchronize session state status
             if st.session_state.get('analysis_running', False) != is_running:
                 st.session_state.analysis_running = is_running
-                logger.info(f"🔄 [Status synchronization] Updating analysis status: {is_running} (based on thread detection: {actual_status})")
+                logger.info(f"[Status synchronization] Updating analysis status: {is_running} (based on thread detection: {actual_status})")
 
             # Get progress data for display
             from utils.async_progress_tracker import get_progress_by_id
@@ -868,26 +961,26 @@ def main():
 
             # Display analysis info
             if is_running:
-                st.info(f"🔄 Analyzing: {current_analysis_id}")
+                st.info(f"Analyzing: {current_analysis_id}")
             else:
                 if actual_status == 'completed':
-                    st.success(f"✅ Analysis completed: {current_analysis_id}")
+                    st.success(f"Analysis completed: {current_analysis_id}")
 
                 elif actual_status == 'failed':
-                    st.error(f"❌ Analysis failed: {current_analysis_id}")
+                    st.error(f"Analysis failed: {current_analysis_id}")
                 else:
-                    st.warning(f"⚠️ Unknown analysis status: {current_analysis_id}")
+                    st.warning(f"Unknown analysis status: {current_analysis_id}")
 
             # Display progress (only show refresh controls if analysis is running)
             progress_col1, progress_col2 = st.columns([4, 1])
             with progress_col1:
-                st.markdown("### 📊 Analysis Progress")
+                st.markdown("### Analysis Progress")
 
             is_completed = display_unified_progress(current_analysis_id, show_refresh_controls=is_running)
 
             # If analysis is running, display prompt message (no additional auto-refresh)
             if is_running:
-                st.info("⏱️ Analysis is in progress, you can use the auto-refresh feature below to view progress updates...")
+                st.info("Analysis is in progress, you can use the auto-refresh feature below to view progress updates...")
 
             # If analysis is just completed, try to restore results
             if is_completed and not st.session_state.get('analysis_results') and progress_data:
@@ -899,26 +992,26 @@ def main():
                         if formatted_results:
                             st.session_state.analysis_results = formatted_results
                             st.session_state.analysis_running = False
-                            logger.info(f"📊 [Result synchronization] Restored analysis results: {current_analysis_id}")
+                            logger.info(f"[Result synchronization] Restored analysis results: {current_analysis_id}")
 
                             # Check if already refreshed, avoid duplicate refresh
                             refresh_key = f"results_refreshed_{current_analysis_id}"
                             if not st.session_state.get(refresh_key, False):
                                 st.session_state[refresh_key] = True
-                                st.success("📊 Analysis results restored, refreshing page...")
+                                st.success("Analysis results restored, refreshing page...")
                                 # Use st.rerun() instead of meta refresh to keep sidebar state
                                 time.sleep(1)
                                 st.rerun()
                             else:
                                 # Already refreshed, no need to refresh
-                                st.success("📊 Analysis results restored!")
+                                st.success("Analysis results restored!")
                     except Exception as e:
-                        logger.warning(f"⚠️ [Result synchronization] Restoration failed: {e}")
+                        logger.warning(f"[Result synchronization] Restoration failed: {e}")
 
             if is_completed and st.session_state.get('analysis_running', False):
                 # Analysis just completed, update status
                 st.session_state.analysis_running = False
-                st.success("🎉 Analysis completed! Refreshing page to show report...")
+                st.success("Analysis completed! Refreshing page to show report...")
 
                 # Use st.rerun() instead of meta refresh to keep sidebar state
                 time.sleep(1)
@@ -952,143 +1045,15 @@ def main():
 
         if should_show_results:
             st.markdown("---")
-            st.header("📋 Analysis Report")
+            st.header("Analysis Report")
             render_results(analysis_results)
-            logger.info(f"✅ [Layout] Analysis report displayed")
+            logger.info(f"[Layout] Analysis report displayed")
 
             # Clear "View Report" button state to avoid duplicate triggers
             if show_results_button_clicked:
                 st.session_state.show_analysis_results = False
     
-    # Only render right content when showing guide
-    if show_guide and col2 is not None:
-        with col2:
-            st.markdown("### ℹ️ Usage Guide")
-        
-            # Quick start guide
-            with st.expander("🎯 Quick Start", expanded=True):
-                st.markdown("""
-                ### 📋 Operation Steps
 
-                1. **Enter Stock Code**
-                   - A-share example: `000001` (Ping An Bank), `600519` (Guizhou Moutai), `000858` (Wuliangye)
-                   - US share example: `AAPL` (Apple), `TSLA` (Tesla), `MSFT` (Microsoft)
-                   - HK share example: `00700` (Tencent), `09988` (Alibaba)
-
-                ⚠️ **Important Note**: After entering the stock code, please press **Enter** to confirm!
-
-                2. **Select Analysis Date**
-                   - Default to today
-                   - Can select historical dates for backtesting analysis
-
-                3. **Select Analyst Team**
-                   - At least one analyst must be selected
-                   - It is recommended to select multiple analysts for a comprehensive analysis
-
-                4. **Set Research Depth**
-                   - 1-2 levels: Quick overview
-                   - 3 levels: Standard analysis (recommended)
-                   - 4-5 levels: Deep research
-
-                5. **Click Start Analysis**
-                   - Wait for AI analysis to complete
-                   - View detailed analysis report
-
-                ### 💡 Usage Tips
-
-                - **Default A-share**: System defaults to analyzing A-shares, no special settings needed
-                - **Code Format**: A-share uses 6-digit code (e.g., `000001`),
-                - **Real-time Data**: Get the latest market data and news
-                - **Multi-dimensional Analysis**: Combine technical, fundamental, and sentiment analysis
-                """)
-
-            # Analysts' explanation
-            with st.expander("👥 Analyst Team Explanation"):
-                st.markdown("""
-                ### 🎯 Professional Analyst Team
-
-                - **📈 Market Analyst**:
-                  - Technical indicators analysis (K-line, moving averages, MACD, etc.)
-                  - Price trend prediction
-                  - Support and resistance analysis
-
-                - **💭 Social Media Analyst**:
-                  - Investor sentiment monitoring
-                  - Social media heat analysis
-                  - Market sentiment indicators
-
-                - **📰 News Analyst**:
-                  - Impact of major news events
-                  - Policy interpretation analysis
-                  - Industry dynamic tracking
-
-                - **💰 Fundamental Analyst**:
-                  - Financial statement analysis
-                  - Valuation model calculation
-                  - Industry comparison analysis
-                  - Profitability assessment
-
-                💡 **Suggestion**: Selecting multiple analysts can provide a more comprehensive investment advice
-                """)
-
-            # Model selection explanation
-            with st.expander("🧠 AI Model Explanation"):
-                st.markdown("""
-                ### 🤖 Intelligent Model Selection
-
-                - **qwen-turbo**:
-                  - Quick response, suitable for quick queries
-                  - Lower cost, suitable for frequent use
-                  - Response time: 2-5 seconds
-
-                - **qwen-plus**:
-                  - Balanced performance, recommended for daily use ⭐
-                  - Accuracy and speed balanced
-                  - Response time: 5-10 seconds
-
-                - **qwen-max**:
-                  - Strongest performance, suitable for deep analysis
-                  - Highest accuracy and analysis depth
-                  - Response time: 10-20 seconds
-
-                💡 **Recommendation**: Use `qwen-plus` for daily analysis, `qwen-max` for important decisions
-                """)
-
-            # Common questions
-            with st.expander("❓ Common Questions"):
-                st.markdown("""
-                ### 🔍 Common Questions and Answers
-
-                **Q: Why does the stock code input not respond?**
-                A: Please ensure you press **Enter** after entering the code, this is the default behavior of Streamlit.
-
-                **Q: What is the A-share code format?**
-                A: A-share uses 6-digit code, such as `000001`, `600519`, `000858`, etc.
-
-                **Q: How long does an analysis take?**
-                A: Depending on research depth and model selection, it usually takes 30 seconds to 2 minutes.
-
-                **Q: Can Hong Kong stocks be analyzed?**
-                A: Yes, input 5-digit HK stocks, such as `00700`, `09988`, etc.
-
-                **Q: How far back can historical data be traced?**
-                A: Usually, historical data from the past 5 years can be analyzed.
-                """)
-
-            # Risk warning
-            st.warning("""
-            ⚠️ **Investment Risk Warning**
-
-            - The analysis results provided by this system are for reference only and do not constitute investment advice
-            - Investing involves risks, please be prudent, and invest rationally
-            - Please combine multiple information and professional advice for investment decisions
-            - Major investment decisions are recommended to consult professional investment advisors
-            - AI analysis has limitations, market changes are difficult to fully predict
-            """)
-        
-        # Display system status
-        if st.session_state.last_analysis_time:
-            st.info(f"🕒 Last analysis time: {st.session_state.last_analysis_time.strftime('%Y-%m-%d %H:%M:%S')}")
 
 if __name__ == "__main__":
     main()

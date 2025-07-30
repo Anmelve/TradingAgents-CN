@@ -221,7 +221,7 @@ def get_docker_status_info():
     return info
 
 if __name__ == "__main__":
-    logger.info(f"🐳 Docker PDF adapter test")
+    logger.info(f"Docker PDF adapter test")
     logger.info(f"=")
     
     status = get_docker_status_info()
@@ -231,10 +231,10 @@ if __name__ == "__main__":
     logger.error(f"PDF test: {'✅' if status['pdf_test_ok'] else '❌'}")
     
     if status['is_docker'] and status['dependencies_ok'] and status['pdf_test_ok']:
-        logger.info(f"\n🎉 Docker PDF functionality fully normal!")
+        logger.info(f"\nDocker PDF functionality fully normal!")
     elif status['is_docker'] and not status['dependencies_ok']:
-        logger.warning(f"\n⚠️ Docker environment missing PDF dependencies, please rebuild image")
+        logger.warning(f"\nDocker environment missing PDF dependencies, please rebuild image")
     elif status['is_docker'] and not status['pdf_test_ok']:
-        logger.error(f"\n⚠️ Docker PDF test failed, possible configuration adjustment needed")
+        logger.error(f"\nDocker PDF test failed, possible configuration adjustment needed")
     else:
         logger.info(f"\n✅ Non-Docker environment, using standard PDF configuration")

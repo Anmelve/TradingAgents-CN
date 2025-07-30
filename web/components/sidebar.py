@@ -10,7 +10,7 @@ def render_sidebar():
 
     with st.sidebar:
         # AI model configuration
-        st.markdown("### 🧠 AI Model Configuration")
+        st.markdown("### AI Model Configuration")
 
         # LLM provider selection
         llm_provider = st.selectbox(
@@ -205,7 +205,7 @@ def render_sidebar():
         st.markdown("---")
 
         # System info
-        st.markdown("**ℹ️ System Information**")
+        st.markdown("**System Information**")
         st.info(f"""
         **Version**: 1.0.0
         **Framework**: Streamlit + LangGraph
@@ -214,12 +214,12 @@ def render_sidebar():
         """)
 
         # Help links
-        st.markdown("**📚 Help Resources**")
+        st.markdown("**Help Resources**")
         st.markdown("""
-        - [📖 Documentation](https://github.com/TauricResearch/TradingAgents)
-        - [🐛 Report Issues](https://github.com/TauricResearch/TradingAgents/issues)
-        - [💬 Discussion Community](https://github.com/TauricResearch/TradingAgents/discussions)
-        - [🔧 API Key Configuration](../docs/security/api_keys_security.md)
+        - [Documentation](https://github.com/TauricResearch/TradingAgents)
+        - [Report Issues](https://github.com/TauricResearch/TradingAgents/issues)
+        - [Discussion Community](https://github.com/TauricResearch/TradingAgents/discussions)
+        - [API Key Configuration](../docs/security/api_keys_security.md)
         """)
 
     return {

@@ -13,7 +13,7 @@ logger = get_logger('web')
 def render_analysis_form():
     """Render stock analysis form"""
 
-    st.subheader("📋 Analysis Configuration")
+    st.subheader("Analysis Configuration")
 
     # Get cached form configuration (ensure it's not None)
     cached_config = st.session_state.get('form_config') or {}
@@ -42,7 +42,7 @@ def render_analysis_form():
                 market_index = 1  # Default A-Share
 
             market_type = st.selectbox(
-                "Select Market 🌍",
+                "Select Market",
                 options=market_options,
                 index=market_index,
                 help="Choose the stock market to analyze"
@@ -53,7 +53,7 @@ def render_analysis_form():
 
             if market_type == "US Stocks":
                 stock_symbol = st.text_input(
-                    "Stock Symbol 📈",
+                    "Stock Symbol",
                     value=cached_stock if (cached_config and cached_config.get('market_type') == 'US Stocks') else '',
                     placeholder="Enter US stock symbol, e.g., AAPL, TSLA, MSFT, then press Enter to confirm",
                     help="Enter the US stock symbol you want to analyze. Press Enter after input.",
@@ -65,7 +65,7 @@ def render_analysis_form():
 
             elif market_type == "HK Stocks":
                 stock_symbol = st.text_input(
-                    "Stock Symbol 📈",
+                    "Stock Symbol",
                     value=cached_stock if (cached_config and cached_config.get('market_type') == 'HK Stocks') else '',
                     placeholder="Enter HK stock symbol, e.g., 0700.HK, 9988.HK, 3690.HK, then press Enter to confirm",
                     help="Enter the HK stock symbol you want to analyze, e.g., 0700.HK (Tencent Holdings), 9988.HK (Alibaba), 3690.HK (Meituan), press Enter after input.",
@@ -77,7 +77,7 @@ def render_analysis_form():
 
             else:  # A-Share
                 stock_symbol = st.text_input(
-                    "Stock Symbol 📈",
+                    "Stock Symbol",
                     value=cached_stock if (cached_config and cached_config.get('market_type') == 'A-Shares') else '',
                     placeholder="Enter A-Share symbol, e.g., 000001, 600519, then press Enter to confirm",
                     help="Enter the A-Share symbol you want to analyze, e.g., 000001 (Ping An Bank), 600519 (Guizhou Moutai), press Enter after input.",
@@ -89,7 +89,7 @@ def render_analysis_form():
             
             # Analysis date
             analysis_date = st.date_input(
-                "Analysis Date 📅",
+                "Analysis Date",
                 value=datetime.date.today(),
                 help="Choose the base date for analysis"
             )
@@ -98,7 +98,7 @@ def render_analysis_form():
             # Research depth (using cached value)
             cached_depth = cached_config.get('research_depth', 3) if cached_config else 3
             research_depth = st.select_slider(
-                "Research Depth 🔍",
+                "Research Depth",
                 options=[1, 2, 3, 4, 5],
                 value=cached_depth,
                 format_func=lambda x: {
@@ -112,7 +112,7 @@ def render_analysis_form():
             )
         
         # Analyst team selection
-        st.markdown("### 👥 Select Analyst Team")
+        st.markdown("### Select Analyst Team")
         
         col1, col2 = st.columns(2)
         
@@ -121,32 +121,32 @@ def render_analysis_form():
 
         with col1:
             market_analyst = st.checkbox(
-                "📈 Market Analyst",
+                "Market Analyst",
                 value='market' in cached_analysts,
                 help="Focus on technical analysis, price trends, and technical indicators"
             )
 
             social_analyst = st.checkbox(
-                "💭 Social Media Analyst",
+                "Social Media Analyst",
                 value='social' in cached_analysts,
                 help="Analyze social media sentiment and investor sentiment indicators"
             )
 
         with col2:
             news_analyst = st.checkbox(
-                "📰 News Analyst",
+                "News Analyst",
                 value='news' in cached_analysts,
                 help="Analyze relevant news events and market dynamics"
             )
 
             fundamentals_analyst = st.checkbox(
-                "💰 Fundamental Analyst",
+                "Fundamental Analyst",
                 value='fundamentals' in cached_analysts,
                 help="Analyze financial data, company fundamentals, and valuation levels"
             )
 
             valuation_analyst = st.checkbox(
-                "📊 Valuation Agent",
+                "Valuation Agent",
                 value='valuation' in cached_analysts,
                 help="Perform DCF valuation using AI-predicted growth rates and real financial data"
             )
@@ -171,7 +171,7 @@ def render_analysis_form():
             st.warning("Please select at least one analyst")
         
         # Advanced options
-        with st.expander("🔧 Advanced Options"):
+        with st.expander("Advanced Options"):
             include_sentiment = st.checkbox(
                 "Include Sentiment Analysis",
                 value=True,
@@ -192,9 +192,9 @@ def render_analysis_form():
 
         # Display input status prompt
         if not stock_symbol:
-            st.info("💡 Please enter the stock symbol above, and press Enter to confirm after input.")
+            st.info("Please enter the stock symbol above, and press Enter to confirm after input.")
         else:
-            st.success(f"✅ Stock symbol entered: {stock_symbol}")
+            st.success(f"Stock symbol entered: {stock_symbol}")
 
         # Add JavaScript to improve user experience
         st.markdown("""
@@ -247,7 +247,7 @@ def render_analysis_form():
 
         # Submit button (do not disable, allow user to click)
         submitted = st.form_submit_button(
-            "🚀 Start Analysis",
+            "Start Analysis",
             type="primary",
             use_container_width=True
         )
@@ -310,7 +310,7 @@ def render_analysis_form():
     elif submitted and not stock_symbol:
         # User clicked submit but did not enter stock symbol
         logger.error(f"🔍 [FORM DEBUG] Submission failed: stock symbol is empty")
-        st.error("❌ Please enter the stock symbol before submitting")
+        st.error("Please enter the stock symbol before submitting")
         return {'submitted': False}
     else:
         return {'submitted': False}

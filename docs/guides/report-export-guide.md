@@ -1,18 +1,18 @@
-# 📄 报告导出使用指南
+# Report Export User Guide
 
-## 📋 概述
+## Overview
 
 TradingAgents-CN v0.1.7 引入了专业级的报告导出功能，支持将股票分析结果导出为Word、PDF、Markdown三种格式。本指南将详细介绍如何使用报告导出功能。
 
-## 🎯 导出功能特色
+## Export Feature Highlights
 
-### 支持格式
+### Supported Formats
 
-| 格式 | 扩展名 | 适用场景 | 特点 |
-|------|--------|----------|------|
-| **📝 Markdown** | .md | 在线查看、版本控制、技术文档 | 轻量级、可编辑、Git友好 |
-| **📄 Word** | .docx | 商业报告、编辑修改、团队协作 | 专业格式、易编辑、兼容性好 |
-| **📊 PDF** | .pdf | 正式发布、打印存档、客户交付 | 固定格式、专业外观、跨平台 |
+| Format | Extension | Use Case | Features |
+|--------|-----------|----------|----------|
+| **Markdown** | .md | Online viewing, version control, technical docs | Lightweight, editable, Git-friendly |
+| **Word** | .docx | Business reports, editing, team collaboration | Professional format, easy editing, good compatibility |
+| **PDF** | .pdf | Formal publishing, printing, client delivery | Fixed format, professional appearance, cross-platform |
 
 ### 技术特性
 
@@ -22,11 +22,11 @@ TradingAgents-CN v0.1.7 引入了专业级的报告导出功能，支持将股�
 - ✅ **模板定制**: 可自定义报告模板
 - ✅ **批量导出**: 支持多个报告同时导出
 
-## 🚀 快速开始
+## Quick Start
 
-### 前置条件
+### Prerequisites
 
-#### Docker环境 (推荐)
+#### Docker Environment (Recommended)
 ```bash
 # Docker环境已预配置所有依赖
 docker-compose up -d
@@ -49,7 +49,73 @@ pandoc --version
 wkhtmltopdf --version
 ```
 
-### 启用导出功能
+### Pandoc Installation Guide
+
+#### What is Pandoc?
+
+Pandoc is a universal document converter that enables Word and PDF export functionality. It converts Markdown content to professional document formats.
+
+#### Installation Methods
+
+**Windows (Chocolatey - Recommended):**
+```bash
+choco install pandoc
+```
+
+**Windows (Manual):**
+1. Download from https://pandoc.org/installing.html
+2. Run the installer
+3. Add to PATH if needed
+
+**macOS (Homebrew):**
+```bash
+brew install pandoc
+```
+
+**Ubuntu/Debian:**
+```bash
+sudo apt update
+sudo apt install pandoc
+```
+
+**CentOS/RHEL/Fedora:**
+```bash
+sudo yum install pandoc
+# or for newer versions
+sudo dnf install pandoc
+```
+
+**Python Auto-Download:**
+```python
+import pypandoc
+pypandoc.download_pandoc()
+```
+
+#### Verification
+
+After installation, verify Pandoc is working:
+```bash
+pandoc --version
+```
+
+Expected output:
+```
+pandoc 3.1.9
+Compiled with pandoc-types 1.23, citeproc 0.8.0.1, skylighting 0.14.1.3,
+Default user data directory: /home/user/.local/share/pandoc
+Copyright (C) 2006-2023 John MacFarlane. Web:  https://pandoc.org
+```
+
+#### Additional Dependencies
+
+**For PDF Export:**
+- **wkhtmltopdf** (Recommended): Download from https://wkhtmltopdf.org/downloads.html
+- **WeasyPrint** (Alternative): `pip install weasyprint`
+
+**For Word Export:**
+- No additional dependencies required
+
+### Enable Export Function
 
 ```bash
 # 在.env文件中配置
@@ -245,7 +311,7 @@ table {
 }
 ```
 
-## 🔧 故障排除
+## Troubleshooting
 
 ### 常见问题
 

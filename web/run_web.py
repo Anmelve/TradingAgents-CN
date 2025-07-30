@@ -32,12 +32,12 @@ def check_dependencies():
             missing_packages.append(package)
 
     if missing_packages:
-        logger.error(f"❌ Missing required packages: {', '.join(missing_packages)}")
+        logger.error(f"Missing required packages: {', '.join(missing_packages)}")
         logger.info(f"Please run the following command to install:")
         logger.info(f"pip install {' '.join(missing_packages)}")
         return False
 
-    logger.info(f"✅ Dependency check passed")
+            logger.info(f"Dependency check passed")
     return True
 
 def clean_cache_files(force_clean=False):
@@ -52,7 +52,7 @@ def clean_cache_files(force_clean=False):
     cache_dirs = list(project_root.rglob("__pycache__"))
 
     if not cache_dirs:
-        logger.info(f"✅ No cache files need to be cleaned")
+        logger.info(f"No cache files need to be cleaned")
         return
 
     # Check if environment variable is set to disable cleaning
@@ -75,9 +75,9 @@ def clean_cache_files(force_clean=False):
                     logger.info(f"  ✅ Cleaned: {cache_dir.relative_to(project_root)}")
                 except Exception as e:
                     logger.error(f"  ⚠️ Cleanup failed: {cache_dir.relative_to(project_root)} - {e}")
-            logger.info(f"✅ Project cache cleanup completed")
+            logger.info(f"Project cache cleanup completed")
         else:
-            logger.info(f"✅ No project cache to clean")
+            logger.info(f"No project cache to clean")
     else:
         # Force cleanup: clean all cache
         logger.info(f"🧹 Forcing cleanup of all cache files...")
@@ -85,10 +85,10 @@ def clean_cache_files(force_clean=False):
             try:
                 import shutil
                 shutil.rmtree(cache_dir)
-                logger.info(f"  ✅ Cleaned: {cache_dir.relative_to(project_root)}")
+                logger.info(f"  Cleaned: {cache_dir.relative_to(project_root)}")
             except Exception as e:
-                logger.error(f"  ⚠️ Cleanup failed: {cache_dir.relative_to(project_root)} - {e}")
-        logger.info(f"✅ All cache cleanup completed")
+                logger.error(f"  Cleanup failed: {cache_dir.relative_to(project_root)} - {e}")
+        logger.info(f"All cache cleanup completed")
 
 def check_api_keys():
     """Check API key configuration"""
@@ -103,7 +103,7 @@ def check_api_keys():
     finnhub_key = os.getenv("FINNHUB_API_KEY")
     
     if not dashscope_key or not finnhub_key:
-        logger.warning(f"⚠️ API key configuration incomplete")
+        logger.warning(f"API key configuration incomplete")
         logger.info(f"Please ensure the following keys are configured in your .env file:")
         if not dashscope_key:
             logger.info(f"  - DASHSCOPE_API_KEY (Aliyun)")
@@ -114,7 +114,7 @@ def check_api_keys():
         logger.info(f"2. Edit the .env file and enter the actual API keys")
         return False
     
-    logger.info(f"✅ API key configuration completed")
+            logger.info(f"API key configuration completed")
     return True
 
 # Add imports at the top of the file
@@ -125,7 +125,7 @@ import psutil
 def main():
     """Main function"""
     
-    logger.info(f"🚀 TradingAgents-CN Web Application Launcher")
+    logger.info(f"TradingAgents-CN Web Application Launcher")
     logger.info(f"=")
     
     # Clean cache files (optional, to avoid Streamlit file watcher errors)
@@ -137,7 +137,7 @@ def main():
         return
     
     # Check API keys
-    logger.info(f"🔑 Checking API keys...")
+    logger.info(f"Checking API keys...")
     if not check_api_keys():
         logger.info(f"\n💡 Hint: You can still start the Web application to view the interface, but you cannot perform actual analysis")
         response = input("Do you want to continue starting? (y/n): ").lower().strip()

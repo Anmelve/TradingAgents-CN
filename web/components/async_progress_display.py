@@ -47,7 +47,7 @@ class AsyncProgressDisplay:
         progress_data = get_progress_by_id(self.analysis_id)
         
         if not progress_data:
-            self.status_text.error("❌ Failed to get analysis progress, please check if the analysis is running")
+            self.status_text.error("Failed to get analysis progress, please check if the analysis is running")
             return False
         
         # 更新显示
@@ -79,23 +79,23 @@ class AsyncProgressDisplay:
             
             # 状态图标
             status_icon = {
-                'running': '🔄',
-                'completed': '✅',
-                'failed': '❌'
-            }.get(status, '🔄')
+                'running': '',
+                'completed': '',
+                'failed': ''
+            }.get(status, '')
             
             # 显示当前状态
             self.status_text.info(f"{status_icon} **Current Status**: {last_message}")
             
             # 显示步骤信息
             if status == 'failed':
-                self.step_info.error(f"❌ **Analysis Failed**: {last_message}")
+                self.step_info.error(f"**Analysis Failed**: {last_message}")
             elif status == 'completed':
-                self.step_info.success(f"🎉 **Analysis Completed**: All steps completed")
+                self.step_info.success(f"**Analysis Completed**: All steps completed")
 
                 # 添加查看报告按钮
                 with self.step_info:
-                    if st.button("📊 View Analysis Report", key=f"view_report_{progress_data.get('analysis_id', 'unknown')}", type="primary"):
+                    if st.button("View Analysis Report", key=f"view_report_{progress_data.get('analysis_id', 'unknown')}", type="primary"):
                         analysis_id = progress_data.get('analysis_id')
                         # 尝试恢复分析结果（如果还没有的话）
                         if not st.session_state.get('analysis_results'):
@@ -115,7 +115,7 @@ class AsyncProgressDisplay:
                         st.session_state.current_analysis_id = analysis_id
                         st.rerun()
             else:
-                self.step_info.info(f"📊 **Progress**: Step {current_step + 1} of {total_steps} ({progress_percentage:.1f}%)\n\n"
+                self.step_info.info(f"**Progress**: Step {current_step + 1} of {total_steps} ({progress_percentage:.1f}%)\n\n"
                                   f"**Current Step**: {step_name}\n\n"
                                   f"**Step Description**: {step_description}")
             
@@ -139,18 +139,18 @@ class AsyncProgressDisplay:
             remaining_time = max(estimated_total_time - real_elapsed_time, 0)
             
             if status == 'completed':
-                self.time_info.success(f"⏱️ **Elapsed Time**: {format_time(real_elapsed_time)} | **Total Time**: {format_time(real_elapsed_time)}")
+                self.time_info.success(f"**Elapsed Time**: {format_time(real_elapsed_time)} | **Total Time**: {format_time(real_elapsed_time)}")
             elif status == 'failed':
-                self.time_info.error(f"⏱️ **Elapsed Time**: {format_time(real_elapsed_time)} | **Analysis Interrupted**")
+                self.time_info.error(f"**Elapsed Time**: {format_time(real_elapsed_time)} | **Analysis Interrupted**")
             else:
-                self.time_info.info(f"⏱️ **Elapsed Time**: {format_time(real_elapsed_time)} | **Estimated Remaining**: {format_time(remaining_time)}")
+                self.time_info.info(f"**Elapsed Time**: {format_time(real_elapsed_time)} | **Estimated Remaining**: {format_time(remaining_time)}")
             
             # 刷新按钮（仅在运行时显示）
             if status == 'running':
                 with self.refresh_button:
                     col1, col2, col3 = st.columns([1, 1, 1])
                     with col2:
-                        if st.button("🔄 Manual Refresh", key=f"refresh_{self.analysis_id}"):
+                        if st.button("Manual Refresh", key=f"refresh_{self.analysis_id}"):
                             st.rerun()
             else:
                 self.refresh_button.empty()
@@ -174,7 +174,7 @@ def auto_refresh_progress(display: AsyncProgressDisplay, max_duration: float = 1
         # 检查超时
         if time.time() - start_time > max_duration:
             with placeholder:
-                st.warning("⚠️ Analysis took too long, auto-refresh stopped. Please manually refresh the page to see the latest status.")
+                st.warning("Analysis took too long, auto-refresh stopped. Please manually refresh the page to see the latest status.")
             break
         
         # 更新显示
@@ -197,7 +197,7 @@ def streamlit_auto_refresh_progress(analysis_id: str, refresh_interval: int = 2)
     progress_data = get_progress_by_id(analysis_id)
 
     if not progress_data:
-        st.error("❌ Failed to get analysis progress, please check if the analysis is running")
+        st.error("Failed to get analysis progress, please check if the analysis is running")
         return False
 
     status = progress_data.get('status', 'running')
@@ -231,7 +231,7 @@ def streamlit_auto_refresh_progress(analysis_id: str, refresh_interval: int = 2)
         st.success(f"🎉 **Analysis Completed**: All steps completed")
 
         # 添加查看报告按钮
-        if st.button("📊 View Analysis Report", key=f"view_report_streamlit_{progress_data.get('analysis_id', 'unknown')}", type="primary"):
+        if st.button("View Analysis Report", key=f"view_report_streamlit_{progress_data.get('analysis_id', 'unknown')}", type="primary"):
             analysis_id = progress_data.get('analysis_id')
             # 尝试恢复分析结果（如果还没有的话）
             if not st.session_state.get('analysis_results'):
@@ -390,7 +390,7 @@ def display_static_progress(analysis_id: str) -> bool:
         st.success(f"🎉 **Analysis Completed**: {last_message}")
 
         # 添加查看报告按钮
-        if st.button("📊 View Analysis Report", key=f"view_report_static_{analysis_id}", type="primary"):
+        if st.button("View Analysis Report", key=f"view_report_static_{analysis_id}", type="primary"):
             # 尝试恢复分析结果（如果还没有的话）
             if not st.session_state.get('analysis_results'):
                 try:
@@ -557,7 +557,7 @@ def display_static_progress_with_controls(analysis_id: str, show_refresh_control
         st.success(f"{status_icon} **Current Status**: {last_message}")
 
         # 添加查看报告按钮
-        if st.button("📊 View Analysis Report", key=f"view_report_unified_{analysis_id}", type="primary"):
+        if st.button("View Analysis Report", key=f"view_report_unified_{analysis_id}", type="primary"):
             # 尝试恢复分析结果（如果还没有的话）
             if not st.session_state.get('analysis_results'):
                 try:

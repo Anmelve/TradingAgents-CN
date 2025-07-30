@@ -107,7 +107,7 @@ def test_report_exporter():
 
 def main():
     """主测试函数"""
-    print("🐳 Docker环境PDF功能测试")
+    print("Docker环境PDF功能测试")
     print("=" * 50)
     
     tests = [

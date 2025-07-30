@@ -64,14 +64,14 @@ class ProgressLogHandler(logging.Handler):
                     if hasattr(tracker, 'progress_data') and tracker.progress_data.get('status') == 'running':
                         try:
                             tracker.update_progress(message)
-                            print(f"📊 [Progress Integration] Forwarding message to {analysis_id}: {message[:50]}...")
+                            print(f"[Progress Integration] Forwarding message to {analysis_id}: {message[:50]}...")
                             break  # Only update the first matching tracker
                         except Exception as e:
-                            print(f"❌ [Progress Integration] Update failed: {e}")
+                            print(f"[Progress Integration] Update failed: {e}")
                         
         except Exception as e:
             # Do not let log handler errors affect the main program
-            print(f"❌ [Progress Integration] Log processing error: {e}")
+            print(f"[Progress Integration] Log processing error: {e}")
     
     def _extract_stock_symbol(self, message: str) -> Optional[str]:
         """Extract stock symbol from message"""

@@ -92,8 +92,8 @@ class ReportExporter:
 
         # Docker environment initialization
         if self.is_docker:
-            logger.info("🐳 Detected Docker environment, initializing PDF support...")
-            logger.info(f"🐳 Detected Docker environment, initializing PDF support...")
+            logger.info("Detected Docker environment, initializing PDF support...")
+            logger.info(f"Detected Docker environment, initializing PDF support...")
             setup_xvfb_display()
     
     def _clean_text_for_markdown(self, text: str) -> str:
@@ -177,7 +177,7 @@ class ReportExporter:
 **Generated Time**: {timestamp}
 **Analysis Status**: {'Demo Mode' if is_demo else 'Full Analysis'}
 
-## 🎯 Investment Decision Summary
+## Investment Decision Summary
 
 | Metric | Value |
 |------|------|
@@ -191,7 +191,7 @@ class ReportExporter:
 
 ---
 
-## 📋 Analysis Configuration Information
+## Analysis Configuration Information
 
 - **LLM Provider**: {results.get('llm_provider', 'N/A')}
 - **AI Model**: {results.get('llm_model', 'N/A')}
@@ -203,18 +203,18 @@ class ReportExporter:
 
 ---
 
-## 📊 Detailed Analysis Report
+## Detailed Analysis Report
 
 """
         
         # Add content for each analysis module
         analysis_modules = [
-            ('market_report', '📈 Market Technical Analysis', 'Technical indicators, price trends, support/resistance analysis'),
-            ('fundamentals_report', '💰 Fundamental Analysis', 'Financial data, valuation levels, profitability analysis'),
-            ('sentiment_report', '💭 Market Sentiment Analysis', 'Investor sentiment, social media sentiment indicators'),
-            ('news_report', '📰 News Event Analysis', 'Relevant news events, market dynamics impact analysis'),
-            ('risk_assessment', '⚠️ Risk Assessment', 'Risk factor identification, risk level assessment'),
-            ('investment_plan', '📋 Investment Advice', 'Specific investment strategies, position management advice')
+            ('market_report', 'Market Technical Analysis', 'Technical indicators, price trends, support/resistance analysis'),
+            ('fundamentals_report', 'Fundamental Analysis', 'Financial data, valuation levels, profitability analysis'),
+            ('sentiment_report', 'Market Sentiment Analysis', 'Investor sentiment, social media sentiment indicators'),
+            ('news_report', 'News Event Analysis', 'Relevant news events, market dynamics impact analysis'),
+            ('risk_assessment', 'Risk Assessment', 'Risk factor identification, risk level assessment'),
+            ('investment_plan', 'Investment Advice', 'Specific investment strategies, position management advice')
         ]
         
         for key, title, description in analysis_modules:
@@ -286,7 +286,7 @@ class ReportExporter:
         md_content += f"""
 ---
 
-## ⚠️ Important Risk Warning
+## Important Risk Warning
 
 **Investment Risk Warning**:
 - **For Informational Purposes Only**: This analysis result is for informational purposes only and does not constitute investment advice.
@@ -539,7 +539,7 @@ def render_export_buttons(results: Dict[str, Any]):
         return
 
     st.markdown("---")
-    st.subheader("📤 Export Report")
+    st.subheader("Export Report")
 
     # Check if export functionality is available
     if not report_exporter.export_available:
@@ -557,13 +557,13 @@ def render_export_buttons(results: Dict[str, Any]):
         if DOCKER_ADAPTER_AVAILABLE:
             docker_status = get_docker_status_info()
             if docker_status['dependencies_ok'] and docker_status['pdf_test_ok']:
-                st.success("🐳 Docker environment PDF support enabled")
+                st.success("Docker environment PDF support enabled")
             else:
-                st.warning(f"🐳 Docker environment PDF support abnormal: {docker_status['dependency_message']}")
+                st.warning(f"Docker environment PDF support abnormal: {docker_status['dependency_message']}")
         else:
-            st.warning("🐳 Docker environment detected, but adapter is not available")
+            st.warning("Docker environment detected, but adapter is not available")
 
-        with st.expander("📖 How to install pandoc"):
+        with st.expander("How to install pandoc"):
             st.markdown("""
             **Windows users:**
             ```bash
@@ -592,7 +592,7 @@ def render_export_buttons(results: Dict[str, Any]):
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        if st.button("📄 Export Markdown", help="Export as Markdown format"):
+        if st.button("Export Markdown", help="Export as Markdown format"):
             logger.info(f"🖱️ [EXPORT] User clicked Markdown export button - Stock: {stock_symbol}")
             logger.info(f"🖱️ User clicked Markdown export button - Stock: {stock_symbol}")
             content = report_exporter.export_report(results, 'markdown')
@@ -601,7 +601,7 @@ def render_export_buttons(results: Dict[str, Any]):
                 logger.info(f"✅ [EXPORT] Markdown export successful, filename: {filename}")
                 logger.info(f"✅ Markdown export successful, filename: {filename}")
                 st.download_button(
-                    label="📥 Download Markdown",
+                    label="Download Markdown",
                     data=content,
                     file_name=filename,
                     mime="text/markdown"
@@ -611,7 +611,7 @@ def render_export_buttons(results: Dict[str, Any]):
                 logger.error("❌ Markdown export failed, content is empty")
     
     with col2:
-        if st.button("📝 Export Word", help="Export as Word document format"):
+        if st.button("Export Word", help="Export as Word document format"):
             logger.info(f"🖱️ [EXPORT] User clicked Word export button - Stock: {stock_symbol}")
             logger.info(f"🖱️ User clicked Word export button - Stock: {stock_symbol}")
             with st.spinner("Generating Word document, please wait..."):
@@ -625,7 +625,7 @@ def render_export_buttons(results: Dict[str, Any]):
                         logger.info(f"✅ Word export successful, filename: {filename}, size: {len(content)} bytes")
                         st.success("✅ Word document generated successfully!")
                         st.download_button(
-                            label="📥 Download Word",
+                            label="Download Word",
                             data=content,
                             file_name=filename,
                             mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
@@ -665,7 +665,7 @@ def render_export_buttons(results: Dict[str, Any]):
                         """)
     
     with col3:
-        if st.button("📊 Export PDF", help="Export as PDF format (requires additional tools)"):
+        if st.button("Export PDF", help="Export as PDF format (requires additional tools)"):
             logger.info(f"🖱️ User clicked PDF export button - Stock: {stock_symbol}")
             with st.spinner("Generating PDF, please wait..."):
                 try:
@@ -676,7 +676,7 @@ def render_export_buttons(results: Dict[str, Any]):
                         logger.info(f"✅ PDF export successful, filename: {filename}, size: {len(content)} bytes")
                         st.success("✅ PDF generated successfully!")
                         st.download_button(
-                            label="📥 Download PDF",
+                            label="Download PDF",
                             data=content,
                             file_name=filename,
                             mime="application/pdf"

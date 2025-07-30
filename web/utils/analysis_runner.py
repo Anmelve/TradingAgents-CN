@@ -73,18 +73,18 @@ def extract_risk_assessment(state):
 
         # Format risk assessment report
         risk_assessment = f"""
-## ⚠️ Risk Assessment Report
+## Risk Assessment Report
 
-### 🔴 Risky Analyst Opinions
+### Risky Analyst Opinions
 {risky_analysis if risky_analysis else 'No risky analysis available'}
 
-### 🟢 Neutral Analyst Opinions
+### Neutral Analyst Opinions
 {neutral_analysis if neutral_analysis else 'No neutral analysis available'}
 
-### 🟢 Conservative Analyst Opinions
+### Conservative Analyst Opinions
 {safe_analysis if safe_analysis else 'No conservative analysis available'}
 
-### 🏛️ Risk Management Committee Final Decision
+### Risk Management Committee Final Decision
 {judge_decision if judge_decision else 'No risk management decision available'}
 
 ---
@@ -192,7 +192,7 @@ def run_stock_analysis(stock_symbol, analysis_date, analysts, research_depth, ll
         logger, stock_symbol, "comprehensive_analysis", session_id
     )
 
-    logger.info(f"🚀 [Analysis Started] Stock analysis started",
+    logger.info(f"[Analysis Started] Stock analysis started",
                extra={
                    'stock_symbol': stock_symbol,
                    'analysis_date': analysis_date,
@@ -205,7 +205,7 @@ def run_stock_analysis(stock_symbol, analysis_date, analysts, research_depth, ll
                    'event_type': 'web_analysis_start'
                })
 
-    update_progress("🚀 Starting stock analysis...")
+    update_progress("Starting stock analysis...")
 
     # Estimate token usage (for cost estimation)
     if TOKEN_TRACKING_ENABLED:
@@ -213,7 +213,7 @@ def run_stock_analysis(stock_symbol, analysis_date, analysts, research_depth, ll
         estimated_output = 1000 * len(analysts)  # Estimate 1000 output tokens per analyst
         estimated_cost = token_tracker.estimate_cost(llm_provider, llm_model, estimated_input, estimated_output)
 
-        update_progress(f"💰 Estimated analysis cost: ¥{estimated_cost:.4f}")
+        update_progress(f"Estimated analysis cost: ¥{estimated_cost:.4f}")
 
     # Validate environment variables
     update_progress("Checking environment variable configuration...")
@@ -720,7 +720,7 @@ Based on comprehensive analysis of {market_name}{stock_symbol}, our AI analysis 
         low_price = round(current_price * random.uniform(0.5, 0.8), 2)
 
         demo_state['market_report'] = f"""
-## 📈 {market_name}{stock_symbol} Technical Analysis Report
+## {market_name}{stock_symbol} Technical Analysis Report
 
 ### Price Trend Analysis
 - **Current Price**: {currency_symbol}{current_price}
@@ -742,7 +742,7 @@ Based on comprehensive analysis of {market_name}{stock_symbol}, our AI analysis 
 
     if 'fundamentals' in analysts:
         demo_state['fundamentals_report'] = f"""
-## 💰 {stock_symbol} Fundamental Analysis Report
+## {stock_symbol} Fundamental Analysis Report
 
 ### Financial Metrics
 - **Price-to-Earnings (P/E)**: {round(random.uniform(15, 35), 1)}
@@ -765,7 +765,7 @@ Based on comprehensive analysis of {market_name}{stock_symbol}, our AI analysis 
 
     if 'social' in analysts:
         demo_state['sentiment_report'] = f"""
-## 💭 {stock_symbol} Market Sentiment Analysis Report
+## {stock_symbol} Market Sentiment Analysis Report
 
 ### Social Media Sentiment
 - **Overall Sentiment**: {'Positive' if action == 'Buy' else 'Negative' if action == 'Sell' else 'Neutral'}
@@ -786,7 +786,7 @@ Based on comprehensive analysis of {market_name}{stock_symbol}, our AI analysis 
 
     if 'news' in analysts:
         demo_state['news_report'] = f"""
-## 📰 {stock_symbol} News Event Analysis Report
+## {stock_symbol} News Event Analysis Report
 
 ### Recent Important News
 1. **Earnings Release**: Company released {'surprisingly good' if action == 'Buy' else 'worse than expected' if action == 'Sell' else 'as expected'} quarterly earnings
@@ -807,7 +807,7 @@ Based on comprehensive analysis of {market_name}{stock_symbol}, our AI analysis 
 
     # Add risk assessment and investment advice
     demo_state['risk_assessment'] = f"""
-## ⚠️ {stock_symbol} Risk Assessment Report
+## {stock_symbol} Risk Assessment Report
 
 ### Main Risk Factors
 1. **Market Risk**: {'Low' if action == 'Buy' else 'High' if action == 'Sell' else 'Medium'}
@@ -822,7 +822,7 @@ Based on comprehensive analysis of {market_name}{stock_symbol}, our AI analysis 
     """
 
     demo_state['investment_plan'] = f"""
-## 📋 {stock_symbol} Investment Advice
+## {stock_symbol} Investment Advice
 
 ### Specific Operation Suggestions
 - **Operation Direction**: {action}

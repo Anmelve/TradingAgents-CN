@@ -284,7 +284,7 @@ class SmartStreamlitProgressDisplay:
     def setup_display(self):
         """Set up display components"""
         with self.container:
-            st.markdown("### 📊 Analysis Progress")
+            st.markdown("### Analysis Progress")
             self.progress_bar = st.progress(0)
             self.status_text = st.empty()
             self.step_info = st.empty()
@@ -296,7 +296,7 @@ class SmartStreamlitProgressDisplay:
         self.progress_bar.progress(progress)
 
         # Update status text
-        self.status_text.markdown(f"**Current Status:** 📋 {message}")
+        self.status_text.markdown(f"**Current Status:** {message}")
 
         # Update step information
         step_text = f"**Progress:** Step {current_step + 1} of {total_steps}, {progress:.1%} complete"

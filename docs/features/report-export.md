@@ -1,32 +1,32 @@
-# 📄 报告导出功能详解
+# Report Export Feature Guide
 
-## 🎯 功能概述
+## Feature Overview
 
 TradingAgents-CN 提供了强大的报告导出功能，支持将股票分析结果导出为多种专业格式，方便用户保存、分享和进一步分析。
 
-## 📋 支持的导出格式
+## Supported Export Formats
 
-### 1. **📝 Markdown格式**
+### 1. **Markdown Format**
 
 - **用途**: 在线查看、版本控制、技术文档
 - **特点**: 轻量级、可编辑、支持版本控制
 - **适用场景**: 开发者文档、在线分享、技术博客
 
-### 2. **📄 Word文档 (.docx)**
+### 2. **Word Document (.docx)**
 
 - **用途**: 商业报告、正式文档、打印输出
 - **特点**: 专业格式、易于编辑、广泛兼容
 - **适用场景**: 投资报告、客户演示、存档备份
 
-### 3. **📊 PDF文档 (.pdf)**
+### 3. **PDF Document (.pdf)**
 
 - **用途**: 正式发布、打印、长期保存
 - **特点**: 格式固定、跨平台兼容、专业外观
 - **适用场景**: 正式报告、监管提交、客户交付
 
-## 🚀 使用方法
+## Usage Guide
 
-### Web界面导出
+### Web Interface Export
 
 1. **完成股票分析**
 
@@ -169,9 +169,104 @@ EXPORT_WATERMARK=false                 # 是否添加水印
 - **CLI导出**: 保存到 `./exports/` 目录
 - **Docker环境**: 映射到主机目录（如配置）
 
-## 🚨 故障排除
+## Pandoc Installation Guide
 
-### 常见问题
+### What is Pandoc?
+
+Pandoc is a universal document converter that enables the export functionality in TradingAgents-CN. It converts Markdown content to Word (.docx) and PDF formats.
+
+### Installation Methods
+
+#### Method 1: Package Managers (Recommended)
+
+**Windows (Chocolatey):**
+```bash
+choco install pandoc
+```
+
+**macOS (Homebrew):**
+```bash
+brew install pandoc
+```
+
+**Ubuntu/Debian:**
+```bash
+sudo apt update
+sudo apt install pandoc
+```
+
+**CentOS/RHEL/Fedora:**
+```bash
+sudo yum install pandoc
+# or for newer versions
+sudo dnf install pandoc
+```
+
+#### Method 2: Direct Download
+
+1. Visit the official Pandoc website: https://pandoc.org/installing.html
+2. Download the appropriate installer for your operating system
+3. Run the installer and follow the setup wizard
+4. Add Pandoc to your system PATH if not done automatically
+
+#### Method 3: Python Auto-Download
+
+The system can automatically download Pandoc if it's not found:
+
+```python
+import pypandoc
+pypandoc.download_pandoc()
+```
+
+### Verification
+
+After installation, verify Pandoc is working:
+
+```bash
+pandoc --version
+```
+
+You should see output similar to:
+```
+pandoc 3.1.9
+Compiled with pandoc-types 1.23, citeproc 0.8.0.1, skylighting 0.14.1.3,
+Default user data directory: /home/user/.local/share/pandoc
+Copyright (C) 2006-2023 John MacFarlane. Web:  https://pandoc.org
+This is free software; see the source for copying conditions. There is no
+warranty, not even for merchantability or fitness for a particular purpose.
+```
+
+### Additional Dependencies
+
+#### For PDF Export
+
+**wkhtmltopdf (Recommended):**
+- Windows: Download from https://wkhtmltopdf.org/downloads.html
+- macOS: `brew install wkhtmltopdf`
+- Linux: `sudo apt install wkhtmltopdf`
+
+**WeasyPrint (Alternative):**
+```bash
+pip install weasyprint
+```
+
+#### For Word Export
+
+No additional dependencies required - Pandoc handles Word conversion natively.
+
+### Docker Environment
+
+If you're using Docker, all dependencies are pre-installed in the container:
+
+```bash
+# Check if running in Docker
+docker exec TradingAgents-web pandoc --version
+docker exec TradingAgents-web wkhtmltopdf --version
+```
+
+## Troubleshooting
+
+### Common Issues
 
 1. **Word导出失败**
 

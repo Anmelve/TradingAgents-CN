@@ -24,8 +24,11 @@ def create_valuation_analyst(llm, toolkit):
         logger.debug(f"FINNHUB_API_KEY loaded: {'SET' if finnhub_api_key else 'NOT SET'} ({str(finnhub_api_key)[:6]}...)")
         logger.debug(f"TUSHARE_TOKEN loaded: {'SET' if tushare_api_key else 'NOT SET'} ({str(tushare_api_key)[:6]}...)")
 
-        # --- Fetch FCF and revenue ---
+        # --- Fetch FCF and revenue (current and historical) ---
         fcf, revenue, shares_outstanding = 0, 0, 0
+        historical_fcf = []
+        historical_revenue = []
+        
         if region not in ("us", "us stocks", "us stock"):
             logger.error(f"Unsupported region: {region}. ValuationAgent only supports US stocks.")
             return {"error": "ValuationAgent only supports US stocks."}
@@ -38,6 +41,7 @@ def create_valuation_analyst(llm, toolkit):
             financials = stock.financials
             stock_info = stock.info
 
+            # Get current FCF
             if 'Free Cash Flow' in cashflow.index:
                 fcf = cashflow.loc['Free Cash Flow'].iloc[0]
                 logger.info(f"Free Cash Flow found directly: {fcf}")
@@ -62,12 +66,49 @@ def create_valuation_analyst(llm, toolkit):
                 fcf = operating_cf + capex
                 logger.info(f"Calculated Free Cash Flow: {fcf} (Operating CF: {operating_cf}, Capex: {capex})")
 
+            # Get historical FCF data (last 3 years)
+            if 'Free Cash Flow' in cashflow.index:
+                historical_fcf = cashflow.loc['Free Cash Flow'].head(3).tolist()
+            else:
+                # Calculate historical FCF from Operating CF and Capex
+                historical_fcf = []
+                for i in range(min(3, len(cashflow.columns))):
+                    try:
+                        if 'Operating Cash Flow' in cashflow.index:
+                            operating_cf = cashflow.loc['Operating Cash Flow'].iloc[i]
+                        elif 'Total Cash From Operating Activities' in cashflow.index:
+                            operating_cf = cashflow.loc['Total Cash From Operating Activities'].iloc[i]
+                        else:
+                            operating_cf = 0
+                            
+                        if 'Capital Expenditure' in cashflow.index:
+                            capex = cashflow.loc['Capital Expenditure'].iloc[i]
+                        elif 'Capital Expenditures' in cashflow.index:
+                            capex = cashflow.loc['Capital Expenditures'].iloc[i]
+                        else:
+                            capex = 0
+                            
+                        historical_fcf.append(operating_cf + capex)
+                    except:
+                        historical_fcf.append(0)
+            
+            logger.info(f"Historical FCF (last 3 years): {historical_fcf}")
+
+            # Get current revenue
             if 'Total Revenue' in financials.index:
                 revenue = financials.loc['Total Revenue'].iloc[0]
             else:
                 logger.error(f"Missing Revenue field in Yahoo Finance financials: {financials.index.tolist()}")
                 return {"valuation_report": f"Error: Missing Revenue field in Yahoo Finance financials: {financials.index.tolist()}"}
 
+            # Get historical revenue data (last 3 years)
+            if 'Total Revenue' in financials.index:
+                historical_revenue = financials.loc['Total Revenue'].head(3).tolist()
+                logger.info(f"Historical Revenue (last 3 years): {historical_revenue}")
+            else:
+                historical_revenue = []
+
+            # Get shares outstanding
             if 'sharesOutstanding' in stock_info:
                 shares_outstanding = stock_info['sharesOutstanding']
                 logger.info(f"Shares Outstanding: {shares_outstanding}")
@@ -94,17 +135,26 @@ def create_valuation_analyst(llm, toolkit):
         system_message = (
             "You are a professional DCF valuation expert. "
             "You must estimate a reasonable FCF growth rate, discount rate, and terminal growth rate for the following company and explain your reasoning in detail. "
+            "Use the historical financial data to inform your growth rate estimates. Consider the company's past performance trends when making projections. "
             "Return your answer WITH JSON ONLY and in the following STRICT JSON format (all property names and string values must use double quotes): "
             '{{ "growth_rate": <float>, "discount_rate": <float>, "terminal_growth_rate": <float>, "reasoning": <string> }}'
         )
 
+        # Format historical data for the prompt
+        historical_fcf_str = ", ".join([f"${fcf_val:,.0f}" for fcf_val in historical_fcf]) if historical_fcf else "Not available"
+        historical_revenue_str = ", ".join([f"${rev_val:,.0f}" for rev_val in historical_revenue]) if historical_revenue else "Not available"
+        
         user_message = (
             f"Company: {ticker}\n"
             f"Region: {region}\n"
-            f"Revenue: {revenue}\n"
-            f"Free Cash Flow: {fcf}\n"
-            f"Years: 5\n"
-            f"Please estimate a reasonable FCF growth rate, discount rate, and terminal growth rate for this company."
+            f"Current Revenue: ${revenue:,.0f}\n"
+            f"Current Free Cash Flow: ${fcf:,.0f}\n"
+            f"Historical Revenue (last 3 years, oldest to newest): {historical_revenue_str}\n"
+            f"Historical Free Cash Flow (last 3 years, oldest to newest): {historical_fcf_str}\n"
+            f"Projection Years: 5\n"
+            f"Please estimate a reasonable FCF growth rate, discount rate, and terminal growth rate for this company. "
+            f"Use the historical data to inform your growth rate estimates. Consider the company's past performance trends, "
+            f"industry characteristics, and current market conditions when making your projections."
         )
 
         logger.info(f"Prompt sent to LLM (system): {system_message}")
@@ -171,12 +221,18 @@ def create_valuation_analyst(llm, toolkit):
 
         per_share_dcf_value = dcf_value / shares_outstanding if shares_outstanding > 0 else 0
 
+        # Format historical data for display
+        historical_fcf_display = [f"${fcf_val:,.0f}" for fcf_val in historical_fcf] if historical_fcf else ["Not available"]
+        historical_revenue_display = [f"${rev_val:,.0f}" for rev_val in historical_revenue] if historical_revenue else ["Not available"]
+        
         valuation_report_str = (
             f"DCF Value: {dcf_value if dcf_value is not None else 'N/A'}\n"
             f"Per-Share DCF Value: ${per_share_dcf_value:.2f}\n"
             f"Growth Rate: {growth_rate * 100:.2f}%\n"
             f"Discount Rate: {discount_rate * 100:.2f}%\n"
             f"Terminal Growth Rate: {terminal_growth_rate * 100:.2f}%\n"
+            f"Historical FCF (last 3 years): {', '.join(historical_fcf_display)}\n"
+            f"Historical Revenue (last 3 years): {', '.join(historical_revenue_display)}\n"
             f"Reasoning: {reasoning}"
         )
 
@@ -189,6 +245,8 @@ def create_valuation_analyst(llm, toolkit):
             "reasoning": reasoning,
             "fcf": fcf,
             "revenue": revenue,
+            "historical_fcf": historical_fcf,
+            "historical_revenue": historical_revenue,
             "ticker": ticker,
             "region": region,
             "stock_price": state.get("stock_price"),
